@@ -1,16 +1,49 @@
 import {createStore} from 'redux';
 
-const store = createStore((state = {count: 0}, action) => {
+// const incrementCount = (payload = {}) => {
+//     return {
+//         type: 'INCREMENT',
+//         incrementBy: typeof payload.incrementBy === 'number' ? payload.incrementBy:1
+//     };
+// };
+
+const incrementCount = ({incrementBy = 1} = {}) => {
+    return {
+        type: 'INCREMENT',
+        incrementBy: incrementBy
+    };
+};
+
+const decrementCount = ({decrementBy = 1} = {}) => {
+    return {
+        type: 'DECREMENT',
+        decrementBy: decrementBy
+    };
+};
+
+const setCount = ({set = 1} = {}) => {
+    return {
+        type: 'SET',
+        count: set
+    };
+};
+
+const resetCount = () => {
+    return {
+        type: 'RESET',
+        countReset: 0
+    };
+};
+
+const countReducer = (state = {count: 0}, action) => {
     switch (action.type) {
         case 'INCREMENT':
-            const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
             return {
-                count: state.count + incrementBy
+                count: state.count + action.incrementBy
             };
         case 'DECREMENT':
-            const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1;
             return {
-                count: state.count - decrementBy
+                count: state.count - action.decrementBy
             };
         case 'SET':
             return {
@@ -18,7 +51,7 @@ const store = createStore((state = {count: 0}, action) => {
             };
         case 'RESET':
             return {
-                count: 0
+                count: action.countReset
             };
         default: 
             return state;
@@ -26,38 +59,33 @@ const store = createStore((state = {count: 0}, action) => {
 
 
     return state;
-});
+};
+
+const store = createStore(countReducer);
 
 const unsubscribe = store.subscribe(() => {
     console.log(store.getState());    
 });
 
-store.dispatch({
-    type: 'INCREMENT',
-    incrementBy: 5
-});
+// store.dispatch({
+//     type: 'INCREMENT',
+//     incrementBy: 5
+// });
 
+store.dispatch(incrementCount({incrementBy:50}));
+
+store.dispatch(incrementCount());
 // zatrzymanie nasluchiwania store
 //unsubscribe(); 
 
-store.dispatch({
-    type: 'INCREMENT'
-});
+// store.dispatch({
+//     type: 'INCREMENT'
+// });
 
-store.dispatch({
-    type: 'RESET'
-});
+store.dispatch(resetCount());
 
-store.dispatch({
-    type: 'DECREMENT'
-});
+store.dispatch(decrementCount());
 
-store.dispatch({
-    type: 'DECREMENT',
-    decrementBy: 10
-});
+store.dispatch(decrementCount({decrementBy:10}));
 
-store.dispatch({
-    type: 'SET',
-    count: 101
-})
+store.dispatch(setCount({set: 101}));
